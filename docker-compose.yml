@@ -1,0 +1,19 @@
+version: "3.1"
+services:
+  mysqldb:
+    image: mysql:latest
+    healthcheck:
+      test: [ "CMD-SHELL", "echo \'#!/bin/bash\n: </dev/tcp/localhost/3306 || exit 1\' > healthcheck.sh && bash healthcheck.sh" ] 
+      timeout: 30s
+      interval: 2s
+      retries: 15
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=dbpass
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.region == 1
